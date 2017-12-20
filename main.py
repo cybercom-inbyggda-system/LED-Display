@@ -3,12 +3,17 @@
 from samplebase import SampleBase
 from rgbmatrix import graphics
 import time
+import urllib2
+import xmltodict
 
 
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
         super(RunText, self).__init__(*args, **kwargs)
         self.parser.add_argument("-t", "--text", help="The text to scroll on the RGB LED panel", default="Hello world!")
+	self.file = urllib2.urlopen(
+            'http://api.sl.se/api2/realtimedeparturesV4.xml?key=e2314562d1854f9986d5b939d91eda0d&siteid=9507'
+            '&timewindow=30&Bus=false')
 
     def run(self):
         offscreen_canvas = self.matrix.CreateFrameCanvas()
@@ -17,8 +22,8 @@ class RunText(SampleBase):
         textColor = graphics.Color(124, 255, 125)
         pos1 = pos2 = pos3 = pos4 = 0 #offscreen_canvas.width
         my_text = self.args.text
-        
-        
+
+
 
         while True:
             offscreen_canvas.Clear()
@@ -36,8 +41,27 @@ class RunText(SampleBase):
                 pos3 = offscreen_canvas.width
             if (pos4 + len4 < 0):
                 pos4 = offscreen_canvas.width
-            time.sleep(0.04)
+            time.sleep(0.00)
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+
+    def GoingTowardsTCentrumDestintion(self):
+        self.data = self.file.read()
+        self.file.close()
+        self.data = xmltodict.parse(self.data)
+        self.data1 = self.data['ResponseOfDepartures']['ResponseData']['Trains']['Train']
+        text = []
+        for index in range(len(self.data1)):
+            if self.data1[index]['JourneyDirection'] == '2':
+                self.destination = self.data1[index]['Destination']
+
+    def ComingFromTCentrum(self):
+        self.data = self.file.read()
+        self.file.close()
+        self.data = xmltodict.parse(self.data)
+        self.data = self.data['ResponseOfDepartures']['ResponseData']['Trains']['Train']
+        for index in range(len(self.data)):
+            if self.data[index]['JourneyDirection'] == '1':
+                print self.data[index]['Destination']
 
 # Main function
 if __name__ == "__main__":
