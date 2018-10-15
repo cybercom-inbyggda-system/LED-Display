@@ -28,21 +28,29 @@ class TrainTime:
     def goingTowardsTCentrum(self):
         output = []
         for index in range(len(self.trains)):
-            if self.trains[index]['JourneyDirection'] == '1':
-                destination = self.trains[index]['Destination']
-                time = self.trains[index]['DisplayTime']
-                output.append(destination + ' ' + time)
-                #print destination + ' ' + time
+            try:
+                if self.trains[index]['JourneyDirection'] == '1':
+                    destination = self.trains[index]['Destination']
+                    time = self.trains[index]['DisplayTime']
+                    output.append(destination + ' ' + time)
+                    #print destination + ' ' + time
+            except Exception as e:
+                print e.__doc__
+                print e.message
         return output
 
     def comingFromTCentrum(self):
         output = []
         for index in range(len(self.trains)):
-            if self.trains[index]['JourneyDirection'] == '2':
-                destination = self.trains[index]['Destination']
-                time = self.trains[index]['DisplayTime']
-                output.append(destination + ' ' + time)
-                #print destination + ' ' + time
+            try:
+                if self.trains[index]['JourneyDirection'] == '2':
+                    destination = self.trains[index]['Destination']
+                    time = self.trains[index]['DisplayTime']
+                    output.append(destination + ' ' + time)
+                    #print destination + ' ' + time
+            except Exception as e:
+                print e.__doc__
+                print e.message
         return output
 
 class RunText(SampleBase):
