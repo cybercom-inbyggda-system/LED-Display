@@ -2,56 +2,9 @@
 # Display a runtext with double-buffering.
 from samplebase import SampleBase
 from rgbmatrix import graphics
+from trainTimeParser import TrainTime
 import time
-import urllib2
-import xmltodict
 
-class TrainTime:
-    def __init__(self):
-        self.update()
-
-    def update(self):
-        try:
-            self.file = urllib2.urlopen(
-                'http://api.sl.se/api2/realtimedeparturesV4.xml?key=e2314562d1854f9986d5b939d91eda0d&siteid=9507'
-                '&timewindow=30&Bus=false')
-            self.data = self.file.read()
-            self.file.close()
-            self.data = xmltodict.parse(self.data)
-            self.trains = self.data['ResponseOfDepartures']['ResponseData']['Trains']['Train']
-        except:
-            print 'Could not update'
-            return False
-
-        return True
-
-    def goingTowardsTCentrum(self):
-        output = []
-        for index in range(len(self.trains)):
-            try:
-                if self.trains[index]['JourneyDirection'] == '1':
-                    destination = self.trains[index]['Destination']
-                    time = self.trains[index]['DisplayTime']
-                    output.append(destination + ' ' + time)
-                    #print destination + ' ' + time
-            except Exception as e:
-                print e.__doc__
-                print e.message
-        return output
-
-    def comingFromTCentrum(self):
-        output = []
-        for index in range(len(self.trains)):
-            try:
-                if self.trains[index]['JourneyDirection'] == '2':
-                    destination = self.trains[index]['Destination']
-                    time = self.trains[index]['DisplayTime']
-                    output.append(destination + ' ' + time)
-                    #print destination + ' ' + time
-            except Exception as e:
-                print e.__doc__
-                print e.message
-        return output
 
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
@@ -90,7 +43,7 @@ class RunText(SampleBase):
                 pos4 = offscreen_canvas.width
             time.sleep(0.04)
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
-            
+
             currentTime = time.time()
             if (currentTime - updateTime >= 60):
                 updateTime = currentTime
@@ -114,31 +67,10 @@ class RunText(SampleBase):
                     row1 = row2 = row3 = row4 = "";
                     row2 = "Error in communication with SL."
                     row4 = "(-.-) Zzz..."
-                    
 
-##    def GoingTowardsTCentrumDestintion(self):
-##        self.data = self.file.read()
-##        self.file.close()
-##        self.data = xmltodict.parse(self.data)
-##        self.data1 = self.data['ResponseOfDepartures']['ResponseData']['Trains']['Train']
-##        text = []
-##        for index in range(len(self.data1)):
-##            if self.data1[index]['JourneyDirection'] == '2':
-##                self.destination = self.data1[index]['Destination']
-##
-##    def ComingFromTCentrum(self):
-##        self.data = self.file.read()
-##        self.file.close()
-##        self.data = xmltodict.parse(self.data)
-##        self.data = self.data['ResponseOfDepartures']['ResponseData']['Trains']['Train']
-##        for index in range(len(self.data)):
-##            if self.data[index]['JourneyDirection'] == '1':
-##                print self.data[index]['Destination']
 
 # Main function
 if __name__ == "__main__":
     run_text = RunText()
     if (not run_text.process()):
         run_text.print_help()
-
-
