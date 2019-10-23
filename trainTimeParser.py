@@ -20,23 +20,28 @@ class TrainTime:
         print(text)
 
     def update(self):
-        response = requests.get('http://api.sl.se/api2/realtimedeparturesV4.json?key=b23349eb8f7c4f5fb7249f887d448464'
-        '&siteid=9507'
-        '&timewindow=30&Bus=false')
-        TrainTime.requestCode = response.status_code
+        try:
+            response = requests.get('http://api.sl.se/api2/realtimedeparturesV4.json?key=b23349eb8f7c4f5fb7249f887d448464'
+            '&siteid=9507'
+            '&timewindow=30&Bus=false')
+            TrainTime.requestCode = response.status_code
 
-        if TrainTime.requestCode == 200:
-            TrainTime.msgStatusCode = response.json()['StatusCode']
-            if TrainTime.msgStatusCode == 0:
-                ##self.jprint(response.json()['ResponseData']['Trains'])
-                self.trains = response.json()['ResponseData']['Trains']
-                return True
+            if TrainTime.requestCode == 200:
+                TrainTime.msgStatusCode = response.json()['StatusCode']
+                if TrainTime.msgStatusCode == 0:
+                    ##self.jprint(response.json()['ResponseData']['Trains'])
+                    self.trains = response.json()['ResponseData']['Trains']
+                    return True
+                else:
+                    print('TrainTime.msgStatusCode = ' + str(TrainTime.msgStatusCode))
+                    return False
             else:
-                print('TrainTime.msgStatusCode = ' + str(TrainTime.msgStatusCode))
+                print('TrainTime.response.status_code = ' + str(TrainTime.requestCode))
                 return False
-        else:
-            print('TrainTime.response.status_code = ' + str(TrainTime.requestCode))
+        except requests.exceptions.RequestException as e:
+            print e # -*- coding: utf-8 -*-
             return False
+
 
     def goingTowardsTCentrum(self):
         output = []

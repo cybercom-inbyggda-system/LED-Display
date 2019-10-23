@@ -4,6 +4,7 @@ from samplebase import SampleBase
 from rgbmatrix import graphics
 from trainTimeParser import TrainTime
 import time
+import commands
 
 
 class RunText(SampleBase):
@@ -66,6 +67,7 @@ class RunText(SampleBase):
                 else:
                     row1 = row2 = row3 = row4 = "";
                     row2 = "Error in communication with SL."
+                    row3 = commands.getoutput('hostname -I')
                     row4 = "(-.-) Zzz..."
 
 
