@@ -30,7 +30,7 @@ class TrainTime:
             '&Bus=false'
             '&Metro=false'
             '&Tram=false'
-            '&Ship=false')
+            '&Ship=false', timeout=5)
             TrainTime.requestCode = response.status_code
 
             if TrainTime.requestCode == 200:
