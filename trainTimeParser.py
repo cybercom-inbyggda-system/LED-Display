@@ -4,14 +4,16 @@ import requests
 
 
 ## b23349eb8f7c4f5fb7249f887d448464
-
 ## e2314562d1854f9986d5b939d91eda0d
 
 class TrainTime:
     msgStatusCode = 0
     requestCode = 0
+    apiKey = ["b23349eb8f7c4f5fb7249f887d448464", "e2314562d1854f9986d5b939d91eda0d"]
+    apiKeyToUse = str()
 
     def __init__(self):
+        self.apiKeyToUse = self.apiKey[1];
         self.update()
 
     def jprint(self, obj):
@@ -21,17 +23,25 @@ class TrainTime:
 
     def update(self):
         try:
-            response = requests.get('http://api.sl.se/api2/realtimedeparturesV4.json?key=b23349eb8f7c4f5fb7249f887d448464'
-            '&siteid=9507'
-            '&timewindow=30&Bus=false')
+            response = requests.get('http://api.sl.se/api2/realtimedeparturesV4.json?'
+            'key='+str(self.apiKeyToUse)+
+            '&siteid=9506'
+            '&timewindow=30'
+            '&Bus=false'
+            '&Metro=false'
+            '&Tram=false'
+            '&Ship=false')
             TrainTime.requestCode = response.status_code
 
             if TrainTime.requestCode == 200:
                 TrainTime.msgStatusCode = response.json()['StatusCode']
                 if TrainTime.msgStatusCode == 0:
-                    ##self.jprint(response.json()['ResponseData']['Trains'])
+                    #self.jprint(response.json()['ResponseData']['Trains'])
                     self.trains = response.json()['ResponseData']['Trains']
                     return True
+                elif TrainTime.msgStatusCode == 1007:
+                    self.toggleApiKey()
+                    return False
                 else:
                     print('TrainTime.msgStatusCode = ' + str(TrainTime.msgStatusCode))
                     return False
@@ -42,6 +52,11 @@ class TrainTime:
             print e # -*- coding: utf-8 -*-
             return False
 
+    def toggleApiKey(self):
+        if self.apiKeyToUse is self.apiKey[0]:
+            self.apiKeyToUse = self.apiKey[1]
+        elif self.apiKeyToUse is self.apiKey[1]:
+            self.apiKeyToUse = self.apiKey[0]
 
     def goingTowardsTCentrum(self):
         output = []
@@ -68,3 +83,14 @@ class TrainTime:
                 print e.__doc__
                 print e.message
         return output
+
+'''
+## This is for debug
+train = TrainTime()
+
+print(train.update())
+
+if(train.update()):
+    print(repr(train.goingTowardsTCentrum()))
+    print(train.comingFromTCentrum())
+'''
