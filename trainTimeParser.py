@@ -1,16 +1,13 @@
 import time
 import json
 import requests
+import os
 
-
-## b23349eb8f7c4f5fb7249f887d448464
-## e2314562d1854f9986d5b939d91eda0d
 
 class TrainTime:
     msgStatusCode = 0
     requestCode = 0
-    apiKey = ["b23349eb8f7c4f5fb7249f887d448464", "e2314562d1854f9986d5b939d91eda0d"]
-    apiKeyToUse = str()
+    apiKeyToUse = os.getenv('SL_API_1')
 
     def __init__(self):
         self.apiKeyToUse = self.apiKey[1];
