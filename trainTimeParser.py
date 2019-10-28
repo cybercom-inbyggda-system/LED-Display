@@ -7,10 +7,10 @@ import os
 class TrainTime:
     msgStatusCode = 0
     requestCode = 0
-    apiKeyToUse = os.getenv('SL_API_1')
+    apiKeyToUse = str()
 
     def __init__(self):
-        self.apiKeyToUse = self.apiKey[1];
+        self.apiKeyToUse = os.getenv('SL_API_1')
         self.update()
 
     def jprint(self, obj):
@@ -37,7 +37,7 @@ class TrainTime:
                     self.trains = response.json()['ResponseData']['Trains']
                     return True
                 elif TrainTime.msgStatusCode == 1007:
-                    self.toggleApiKey()
+                    ##self.toggleApiKey()
                     return False
                 else:
                     print('TrainTime.msgStatusCode = ' + str(TrainTime.msgStatusCode))
